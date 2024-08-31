@@ -1,0 +1,46 @@
+# Default: "Tabs"
+# char size of single indentation. If `indent_type` is set to "Tabs",
+# this option is used as a heuristic to determine column width only.
+indent_type = "Spaces"
+
+# Default: 4
+indent_width = 2
+
+# Default: 120
+column_width = 120
+
+##
+# Quote style for str literals
+# AutoPreferDouble, AutoPreferSingle, ForceDouble, ForceSingle
+# AutoPrefer styles will prefer the specified quote style, but fall back to the alt if it has fewer str escapes.
+# Force styles always use the specified style regardless of escapes
+quote_style = "AutoPreferSingle"
+
+##
+# Whether parens should be applied to function calls with single str/table args.
+# Always, NoSingleString, NoSingleTable, None, Input
+# "Always" applies parenthesis in all cases.
+# "NoSingleString" omits parens on calls with a single string arg
+# "NoSingleTable" similarly omits parens on calls with a single table arg
+
+# "None" omits parens in both cases:
+## Note: parens are still kept in situations where removal can lead to obscurity
+## e.g. `foo "bar".setup -> foo("bar").setup`, since the index is on the call result, not the string
+# "Input" removes all automation and preserves parens only if they were present in input code:
+#   - consistency is not enforced
+call_parentheses = "NoSingleTable"
+
+# Never, FunctionOnly, ConditionalOnly, Always
+# collapse_simple_statement = "FunctionOnly"
+collapse_simple_statement = "Always"
+
+# NOTE: Stylua has buil-in support for sorting requirement statements. It groups consecutive requirement statements into a single "block",
+# and then requires are sorted only within that block. Blocks of requires dont move around the file
+# Only include requires of the form `local NAME = require(EXPR)`, and lexicographically based on NAME.
+# Also support Roblox services of the form `local NAME = game:GetService(EXPR)`
+# Default: false
+# ----------------------------------------
+# TODO: Trialing the option for the time being
+# 07/15/2023::15:44 --> date, time of day (hour, minute)
+[sort_requires]
+enabled = true

@@ -1,0 +1,409 @@
+local border, icons = eo.ui.current.border, eo.ui.icons
+local highlight = eo.highlight
+return {
+  {
+    'neovim/nvim-lspconfig',
+    -- lazy = false,
+    dependencies = {
+      {
+        'williamboman/mason.nvim',
+        -- lazy = false,
+        -- build = ':MasonUpdate',
+        -- cmd = 'Mason',
+        opts = { ui = { border = border, height = 0.7 } },
+      },
+      {
+        'williamboman/mason-lspconfig.nvim',
+        --@eo from skimask9/astronvim_config/blob/main/plugins/mason.lua
+        -- maybe this is also why the wsl config is having an issue with inlay_hints??
+        -- inlay_hints = { enabled = true },
+        opts = {
+          automatic_installation = true,
+          -- handlers = {
+          --   function(name)
+          --     -- local config = require('eo.servers')(name)
+          --     local config = require('eo.servers')(name)
+          --     -- if config then require('lspconfig')[name].setup(config) end
+          --   end,
+          -- },
+        },
+      },
+      {
+        'j-hui/fidget.nvim',
+        opts = {
+          progress = {
+            ignore_done_already = true, -- ignore new tasks that are already complete
+            -- how many lsp messages to show at once
+            display = { render_limit = 3 },
+          },
+        },
+      },
+    },
+    config = function()
+      highlight.plugin('lspconfig', { { LspInfoBorder = { link = 'FloatBorder' } } })
+      local lspconfig = require('lspconfig')
+      local util = require('lspconfig.util')
+
+      require('lspconfig.ui.windows').default_options.border = border
+      -- require('lspconfig').pyright.setup(require('eo.servers')('pyright'))
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
+        callback = function(event)
+          local fzf_lua = require('fzf-lua')
+
+          local function map(keys, func, desc)
+            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          end
+
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          -- if not client then return end
+          -- on_attach(client, event.buf)
+          assert(client, 'LSP client not found')
+
+          ---@diagnostic disable-next-line: inject-field
+          client.server_capabilities.document_formatting = true
+
+          map('<leader>gS', fzf_lua.lsp_document_symbols, '[g]o to [S]ymbols')
+          map('<leader>gD', fzf_lua.lsp_typedefs, '[g]o to type [D]efinition')
+          map('<leader>gd', fzf_lua.lsp_definitions, '[g]o to [d]efinition')
+          map('<leader>gr', fzf_lua.lsp_references, '[g]o to [r]eferences')
+          map('K', '<Cmd>lua vim.lsp.buf.hover()<CR>', '[K] hover doc')
+          map('gh', '<cmd>lua vim.lsp.buf.signature_help()<CR>', '[g]o to signature [h]elp')
+          map('<localleader>gI', fzf_lua.lsp_incoming_calls, '[g]o to [i]ncoming calls')
+          map('<localleader>gi', fzf_lua.lsp_implementations, '[g]o to [I]mplementation')
+          map('[d', function() vim.diagnostic.goto_prev { float = true } end, 'previous [d]iagnostic ')
+          map(']d', function() vim.diagnostic.goto_next { float = true } end, 'next [d]iagnostic ')
+          map('<leader>ca', fzf_lua.lsp_code_actions, '[c]ode [a]ctions')
+          map(
+            '<leader>ci',
+            function() vim.lsp.inlay_hint(true, not vim.lsp.inlay_hint.is_enabled()) end,
+            'toggle InlayHints'
+          )
+          map('<leader>cl', vim.lsp.codelens.run, '[l]ens run')
+          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>rf', vim.lsp.buf.format, '[r]un [f]ormat')
+          map('<leader>rq', vim.diagnostic.setqflist, '[r]un [q]uickfix')
+        end,
+      })
+
+      local lsp_flags = {
+        allow_incremental_sync = true,
+        debounce_text_changes = 150,
+      }
+
+      vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = border })
+      vim.lsp.handlers['textDocument/signatureHelp'] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = border })
+
+      -- local function show_related_locations(diag)
+      --   local related_info = diag.relatedInformation
+      --   if not related_info or #related_info == 0 then return diag end
+      --   for _, info in ipairs(related_info) do
+      --     diag.message = ('%s\n%s(%d:%d)%s'):format(
+      --       diag.message,
+      --       vim.fn.fnamemodify(vim.uri_from_fname(info.location.uri), ':p:.'),
+      --       info.location.range.start.line + 1,
+      --       info.location.range.start.character + 1,
+      --       not eo.falsy(info.message) and (': %s'):format(info.message) or ''
+      --     )
+      --   end
+      --   return diag
+      -- end
+
+      -- local M = vim.lsp.protocol.Methods
+      -- local handler = vim.lsp.handlers[M.textDocument_publishDiagnostics]
+
+      -- vim.lsp.handlers['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
+      --   result.diagnostics = vim.tbl_map(show_related_locations, result.diagnostics)
+      --   handler(err, result, ctx, config)
+      -- end
+
+      vim.lsp.handlers['window/logMessage'] = function(_, result)
+        local msg = result.message
+        if type(msg) == 'table' then msg = vim.inspect(msg) end
+        if type(msg) == 'string' then vim.notify(msg, 'info', { title = 'LSP' }) end
+        -- if type(result.message) == 3 then
+        --   if msg:find('pythonPath') then vim.notify(msg) end
+        -- end
+      end
+
+      vim.lsp.handlers['window/logMessage'] = function(_, content, _)
+        if content.type == 3 then
+          if content.message:find('pythonPath') then vim.notify(content.message) end
+        end
+      end
+
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+      lspconfig.marksman.setup {
+        capabilities = capabilities,
+        filetypes = { 'markdown', 'quarto' },
+        root_dir = util.root_pattern('.git', '.marksman.toml', '_quarto.yml'),
+      }
+
+      lspconfig.yamlls.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        settings = {
+          yaml = {
+            format = { enable = false },
+            schemastore = { enable = false, url = '' },
+            schemas = require('schemastore').yaml.schemas {},
+          },
+        },
+      }
+
+      lspconfig.dotls.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+      }
+
+      local function get_quarto_resource_path()
+        local function strsplit(s, delimiter)
+          local result = {}
+          for match in (s .. delimiter):gmatch('(.-)' .. delimiter) do
+            table.insert(result, match)
+          end
+          return result
+        end
+
+        local f = assert(io.popen('quarto --paths', 'r'))
+        local s = assert(f:read('*a'))
+        f:close()
+        return strsplit(s, '\n')[2]
+      end
+
+      local lua_library_files = vim.api.nvim_get_runtime_file('', true)
+      local lua_plugin_paths = {}
+      local resource_path = get_quarto_resource_path()
+      if resource_path == nil then
+        vim.notify_once('quarto not found, lua library files not loaded')
+      else
+        table.insert(lua_library_files, resource_path .. '/lua-types')
+        table.insert(lua_plugin_paths, resource_path .. '/lua-plugin/plugin.lua')
+      end
+
+      lspconfig.lua_ls.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        single_file_support = true,
+        settings = {
+          Lua = {
+            runtime = {
+              version = 'LuaJIT',
+              plugin = lua_plugin_paths,
+            },
+            codeLens = { enable = true },
+            hover = { expandAlias = false },
+            type = { castNumberToInteger = true },
+            hint = {
+              enable = true,
+              await = true,
+              setType = false,
+              paramType = true,
+              paramName = 'Disable',
+              semicolon = 'Disable',
+              arrayIndex = 'Disable',
+            },
+            format = { enable = false },
+            diagnostics = {
+              globals = {
+                'quarto',
+                'pandoc',
+                'io',
+                'string',
+                'vim',
+                'print',
+                'require',
+                'table',
+                'eo',
+                'bit',
+                'map',
+              },
+              disable = { 'trailing-space' },
+            },
+            completion = {
+              autoRequire = false,
+              keywordSnippet = false,
+              workspaceWord = true,
+              callSnippet = 'Replace',
+            },
+            workspace = {
+              library = lua_library_files,
+              checkThirdParty = false,
+            },
+            telemetry = { enable = false },
+          },
+        },
+      }
+
+      lspconfig.julials.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        settings = {
+          julia = {
+            symbolCacheDownload = true,
+            enableTelemetry = false,
+          },
+        },
+      }
+
+      lspconfig.bashls.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        filetypes = { 'sh', 'bash', 'zsh', 'env' },
+      }
+
+      lspconfig.taplo.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        init_options = {
+          configurationSection = 'evenBetterToml',
+          cachePath = vim.NIL,
+        },
+      }
+
+      lspconfig.jsonls.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        settings = {
+          json = {
+            schemas = require('schemastore').json.schemas {},
+            filetypes = { 'json', 'jsonc', 'json5' },
+            validate = { enable = false },
+            format = { enable = false },
+          },
+        },
+      }
+
+      lspconfig.basedpyright.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        on_attach = function(client)
+          client.server_capabilities.hoverProvider = false
+          client.server_capabilities.signatureHelpProvider = false
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
+        settings = {
+          disableLanguageServices = true,
+          disableOrganizeImports = true, -- let ruff|lsp take care of this
+          basedpyright = {
+            analysis = {
+              useLibraryCodeForTypes = true,
+              autoSearchPaths = true,
+              typeCheckingMode = 'off',
+              diagnosticMode = 'off',
+              diagnosticSeverityOverrides = {
+                reportUnusedVariable = 'none',
+                reportUnusedCallResult = 'none',
+                reportUnusedExpression = 'none',
+                reportUnknownMemberType = 'none',
+                reportUnknownLambdaType = 'none',
+                reportUnknownParameterType = 'none',
+                reportMissingParameterType = 'none',
+                reportUnknownVariableType = 'none',
+                reportUnknownArgumentType = 'none',
+                reportImplicitOverride = 'none',
+                reportAny = 'none',
+              },
+            },
+          },
+        },
+      }
+
+      lspconfig.ruff_lsp.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        on_attach = function(client)
+          client.server_capabilities.hoverProvider = false
+          client.server_capabilities.signatureHelpProvider = false
+          client.server_capabilities.documentFormattingProvider = true
+          client.server_capabilities.documentRangeFormattingProvider = true
+        end,
+        init_options = {
+          settings = {
+            organizeImports = true,
+            fixAll = false,
+            codeAction = { fixViolation = { enable = false } },
+            -- args = {
+            --   '--extend-select',
+            --   'W,C90,UP,ASYNC,S,B,A,COM,C4,DTZ,T10,EXE,ISC,ICN,G,INP,PIE,PYI,PT,RET,SIM,TID,TCH,PL,TRY,PD,NPY,PERF',
+            --   '--ignore',
+            --   'E40,E50,W29,PLR0913,S101,RET504,RET505,C901,TRY003,F401,F501,PLR0915,COM812,PLR2004,S301,S311,PIE808,B007s,UP039,SIM300,PLR5501,I',
+            -- },
+          },
+        },
+      }
+
+      lspconfig.jedi_language_server.setup {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        on_attach = function(client)
+          client.server_capabilities.hoverProvider = false
+          client.server_capabilities.signatureHelpProvider = false
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
+        -- settings = {
+        initializationOptions = {
+          diagnostics = {
+            enable = false,
+            didOpen = false,
+            didChange = false,
+            didSave = false,
+          },
+          completion = {
+            disableSnippets = false,
+            resolveEagerly = true,
+          },
+        },
+        -- },
+      }
+    end,
+  },
+  {
+    'DNLHC/glance.nvim',
+    event = 'LspAttach',
+    opts = {
+      preview_win_opts = { relativenumber = false },
+      theme = { enable = true, mode = 'darken' },
+    },
+    keys = {
+      { 'gD', '<Cmd>Glance definitions<CR>', desc = 'lsp: glance definitions' },
+      { 'gR', '<Cmd>Glance references<CR>', desc = 'lsp: glance references' },
+      { 'gY', '<Cmd>Glance type_definitions<CR>', desc = 'lsp: glance type definitions' },
+    },
+  },
+  { 'folke/trouble.nvim', dev = true },
+  { 'onsails/lspkind.nvim', event = 'LspAttach' },
+  { 'b0o/schemastore.nvim', event = 'LspAttach' },
+  { 'mrjones2014/lua-gf.nvim', ft = 'lua' },
+  { 'soulis-1256/eagle.nvim', enabled = false },
+  {
+    'utilyre/barbecue.nvim',
+    enabled = true,
+    -- event = 'LspAttach',
+    dependencies = {
+      'neovim/nvim-lspconfig',
+      'SmiteshP/nvim-navic',
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = {
+      attach_navic = false, -- prevent barbecue from automatically attaching nvim-navic
+    },
+  },
+}
+
+-- opts = {
+--   automatic_installation = true,
+--   -- handlers = {
+--   --   function(name)
+--   --     -- local config = require('eo.servers')(name)
+--   --     local config = require('eo.servers')(name)
+--   --     -- if config then require('lspconfig')[name].setup(config) end
+--   --   end,
+--   -- },
+-- },

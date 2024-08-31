@@ -1,0 +1,55 @@
+---
+author: Ernest Orlowski
+jupyter:
+  kernel: genpy312
+  cache: true
+title: Tidy Finance examples with Python
+editor:
+  markdown:
+    wrap: sentence
+execute:
+  echo: true
+---
+
+$$
+\begin{align*}
+r_{i,t+1} = α + λ
+\end{align*}
+$$
+
+```python
+import math as mt
+from scipy.stats import norm
+
+
+def callPx(S_0, K, r, T, σ, τ):
+    σRtT = σ*mt.sqrt(τ)
+    rSigTerm = (r + σ * σ/ 2.0) * τ
+    d1 = (mt.log(S_0 / K) + rSigTerm) / σRtT
+    d2 = d1 - σRtT
+    term1 = S_0 * norm.cdf(d1)
+    term2 = K * mt.exp(-r * τ) * norm.cdf(d2)
+    price = term1 - term2
+    return price
+```
+
+```python
+px = callPx(100, 100, 0.0, 0.1, 0.25, 0.25)
+print(px)
+```
+
+```python
+from IPython.display import YouTubeVideo
+
+YouTubeVideo("ZA4JkHKZM50", width=900, height=500)
+```
+
+```python
+import pandas as pd
+
+```
+
+
+
+
+
