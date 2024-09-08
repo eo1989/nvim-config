@@ -18,26 +18,43 @@ return {
         cyclic = true,
       }
 
-      -- augend.date.alias["%Y/%m/%d"],
-      -- casing,
       config.augends:register_group {
         default = {
           augend.integer.alias.decimal,
           augend.integer.alias.hex,
+          augend.integer.alias.binary,
           augend.date.alias['%m/%d/%Y'],
-          augend.constant.alias.bool,
+          augend.date.new(
+            {
+              pattern = '%m/%d',
+              default_kind ="day",
+              only_valid = true,
+              word = true,
+              clamp = true,
+              end_sensitive = true,
+            }
+          ),
+          -- augend.constant.alias.bool,
+          augend.constant.new({
+            elements = { 'and', 'or' },
+            word = true, -- if false, 'sand' is incremented into 'sor', 'doctor' into 'doctand', etc
+            cyclic = true, -- 'or' increments into 'and'
+          }),
+          augend.constant.new { elements = { 'True', 'False' }, word = false, preserve_case = true, cyclic = true },
+          augend.constant.new { elements = { 'true', 'false' }, word = false, cyclic = true },
         },
       }
 
-      config.augends:on_filetype {
-        python = {
-          augend.integer.alias.decimal,
-          augend.constant.new { elements = { 'True', 'False' }, word = false, cyclic = true },
-          augend.constant.new { elements = { 'and', 'or' }, word = false, cyclic = true },
-          augend.constant.new { elements = { '&', '|' }, word = false, cyclic = true },
-          augend.constant.new { elements = { 'is', 'is not' }, word = false, cyclic = true },
-        },
-      }
+      -- config.augends:register_group {
+      --   python = {
+      --     augend.integer.alias.decimal,
+      --     augend.constant.new { elements = { 'True', 'False' }, word = false, cyclic = true },
+      --     augend.constant.new { elements = { 'and', 'or' }, word = false, cyclic = true },
+      --     augend.constant.new { elements = { '&', '|' }, word = false, cyclic = true },
+      --     augend.constant.new { elements = { 'is', 'is not' }, word = false, cyclic = true },
+      --   },
+      -- }
+
     end,
   },
   {

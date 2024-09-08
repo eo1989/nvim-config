@@ -1,3 +1,7 @@
+local ui = eo.ui
+local lsp = ui.lsp
+local icons = ui.icons
+
 return {
   {
     'nvim-neo-tree/neo-tree.nvim',
@@ -21,7 +25,7 @@ return {
     end,
     opts = {
       close_if_last_window = true,
-      enable_diagnostics = true,
+      enable_diagnostics = false,
       auto_clean_after_session_restore = false,
       sources = { 'filesystem', 'document_symbols', 'git_status' },
       default_source = 'filesystem',
@@ -45,9 +49,10 @@ return {
       popup_border_style = 'NC',
       resize_timer_interval = 500, -- in ms, needed for containers to redraw right aligned and faded content
       source_selector = {
-        winbar = false,
-        separator = { left = '◖ ', right = ' ◗' },
-        -- separator_active = '',
+        winbar = true,
+        -- separator = { left = '◖ ', right = ' ◗' },
+        separator = { left = '◤ ', right = ' ◥' },
+        separator_active = '',
         sources = {
           {
             source = 'filesystem',
@@ -91,7 +96,7 @@ return {
         },
       },
       default_component_configs = {
-        -- icon = { folder_empty = eo.ui.icons.documents.open_folder },
+        icon = { folder_empty = icons.documents.open_folder },
         name = { highlight_opened_files = true },
         indent = {
           with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
@@ -99,27 +104,27 @@ return {
           -- expander_expanded = '',
           expander_highlight = 'NeoTreeExpander',
         },
-        -- document_symbols = {
-        --   follow_cursor = true,
-        --   kinds = vim.iter(eo.ui.lsp.highlights):fold({}, function(acc, k, v)
-        --     acc[k] = { icon = v, hl = require('lspkind').symbol_map[k] }
-        --     return acc
-        --   end),
-        -- },
-        -- modified = { symbol = eo.ui.icons.misc.circle .. ' ' },
-        -- git_status = {
-        --   symbols = {
-        --     added = eo.ui.icons.git.add,
-        --     deleted = eo.ui.icons.git.remove,
-        --     modified = eo.ui.icons.git.mod,
-        --     renamed = eo.ui.icons.git.rename,
-        --     untracked = eo.ui.icons.git.untracked,
-        --     ignored = eo.ui.icons.git.ignored,
-        --     unstaged = eo.ui.icons.git.unstaged,
-        --     staged = eo.ui.icons.git.staged,
-        --     conflict = eo.ui.icons.git.conflict,
-        --   },
-        -- },
+        document_symbols = {
+          follow_cursor = true,
+          kinds = vim.iter(lsp.highlights):fold({}, function(acc, k, v)
+            acc[k] = { icon = v, hl = require('lspkind').symbol_map[k] }
+            return acc
+          end),
+        },
+        modified = { symbol = icons.misc.circle .. ' ' },
+        git_status = {
+          symbols = {
+            added = icons.git.add,
+            deleted = icons.git.remove,
+            modified = icons.git.mod,
+            renamed = icons.git.rename,
+            untracked = icons.git.untracked,
+            ignored = icons.git.ignored,
+            unstaged = icons.git.unstaged,
+            staged = icons.git.staged,
+            conflict = icons.git.conflict,
+          },
+        },
         file_size = { require_width = 20 },
       },
       window = {

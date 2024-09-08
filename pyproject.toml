@@ -38,17 +38,17 @@ exclude = [
 
 # extend = "../ruff.toml"
 line-length = 80
-# target-version = ['py311', 'py312']
+target-version = ['py312']
 extend-include = ["*.ipynb"]
 
 [tool.ruff.lint]
-exclude = ["*.ipynb"]
+# exclude = ["*.ipynb"]
 fixable = ["ALL"]
 unfixable = []
 # select = ["E4", "E7", "E9", "F", "W"]
 # ignore = ["E501", "E2", "E5", "F4", "W"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-extend-select = ["UP", "D"]
+extend-select = ["UP"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

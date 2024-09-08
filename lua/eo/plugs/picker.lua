@@ -1,6 +1,6 @@
 local fn, env, ui, reqcall = vim.fn, vim.env, eo.ui, eo.reqcall
--- local icons, lsp_hls = ui.icons, ui.lsp.highlights
--- local prompt =  icons.misc.telescope or ' '  .. '  '
+local icons, lsp_hls = ui.icons, ui.lsp.highlights
+local prompt =  (icons.misc.telescope or ' ')  .. '  '
 -- local prompt = ' ' .. '  '
 
 local fzf_lua = reqcall('fzf-lua') ---@module 'fzf-lua'
@@ -44,13 +44,13 @@ local function dropdown(opts)
     fzf_opts = { ['--layout'] = 'reverse' },
     winopts = {
       title_pos = opts.winopts.title and 'center' or nil,
-      height = 0.70,
-      width = 0.45,
+      height = 0.6,
+      width = 0.6,
       row = 1,
       -- preview = { hidden = 'hidden', layout = 'horizontal', horizontal = 'right:50%' },
-      preview = { hidden = 'nohidden', layout = 'vertical', vertical = 'up:50%' },
+      -- preview = { hidden = 'nohidden', layout = 'vertical', vertical = 'up:50%' },
       -- preview = { hidden = false, layout = 'horizontal', vertical = 'right:60%' },
-      -- preview = { hidden = 'hidden', layout = 'horizontal', horizontal = 'up:60%' },
+      preview = { hidden = 'nohidden', layout = 'horizontal', horizontal = 'up:70%' },
     },
   }, opts)
 end
@@ -105,30 +105,27 @@ return {
     priority = 101,
     lazy = false,
     -- cmd = 'FzfLua',
-    dependencies = { 'nvim-web-devicons', 'lspkind.nvim' },
+    dependencies = { 'nvim-tree/nvim-web-devicons', 'onsails/lspkind.nvim' },
     -- stylua: ignore start
     keys = {
-      { '<C-p>',          git_files_cwd_aware,                                        desc = 'find files' },
-      { '<leader>fa',     '<Cmd>FzfLua<CR>',                                          desc = 'builtins' },
-      { '<leader>ff',     file_picker,                                                desc = 'find files' },
-      { '<leader>fb',     fzf_lua.buffers,                                            desc = 'buffers' },
-      { '<leader>fs',     fzf_lua.grep_curbuf,                                        desc = 'current buffer fuzzy find' },
-      { '<leader>fvh',    fzf_lua.highlights,                                         desc = 'highlights' },
-      { '<leader>fvk',    fzf_lua.keymaps,                                            desc = 'keymaps' },
-      { '<leader>fva',    fzf_lua.autocmds,                                           desc = 'autocommands' },
-      { '<leader>fle',    fzf_lua.diagnostics_workspace,                              desc = 'workspace diagnostics' },
-      { '<leader>fld',    fzf_lua.lsp_document_symbols,                               desc = 'document symbols' },
-      { '<leader>fls',    fzf_lua.lsp_live_workspace_symbols,                         desc = 'workspace symbols' },
-      { '<leader>f?',     fzf_lua.help_tags,                                          desc = 'help' },
-      { '<leader>fh',     fzf_lua.oldfiles,                                           desc = 'Most (f)recently used files' },
-      { '<leader>fgb',    fzf_lua.git_branches,                                       desc = 'branches' },
-      { '<leader>fgc',    fzf_lua.git_commits,                                        desc = 'commits' },
-      { '<leader>fgB',    fzf_lua.git_bcommits,                                       desc = 'buffer commits' },
-      { '<localleader>p', fzf_lua.registers,                                          desc = 'Registers' },
-      { '<leader>fs',     fzf_lua.live_grep,                                          desc = 'live grep' },
-      -- { '<leader>fd',     function() file_picker(vim.env.DOTFILES) end,               desc = 'dotfiles' },
-      { '<leader>fc',     function() file_picker(vim.g.nvim_dir) end,                 desc = 'nvim config' },
-      -- { '<leader>fN',     function() file_picker(env.SYNC_DIR .. '/notes/neorg') end, desc = 'norg files' },
+      { '<C-p>',          git_files_cwd_aware,                          desc = 'find files' },
+      { '<leader>fa',     '<Cmd>FzfLua<CR>',                            desc = 'builtins' },
+      { '<leader>ff',     file_picker,                                  desc = 'find files' },
+      { '<leader>fb',     fzf_lua.buffers,                              desc = 'buffers' },
+      { '<leader>fs',     fzf_lua.grep_curbuf,                          desc = 'current buffer fuzzy find' },
+      { '<leader>fvh',    fzf_lua.highlights,                           desc = 'highlights' },
+      { '<leader>fvk',    fzf_lua.keymaps,                              desc = 'keymaps' },
+      { '<leader>fva',    fzf_lua.autocmds,                             desc = 'autocommands' },
+      { '<leader>fle',    fzf_lua.diagnostics_workspace,                desc = 'workspace diagnostics' },
+      { '<leader>fld',    fzf_lua.lsp_document_symbols,                 desc = 'document symbols' },
+      { '<leader>fls',    fzf_lua.lsp_live_workspace_symbols,           desc = 'workspace symbols' },
+      { '<leader>fh',     fzf_lua.help_tags,                            desc = 'help' },
+      { '<leader>fgb',    fzf_lua.git_branches,                         desc = 'branches' },
+      { '<leader>fgc',    fzf_lua.git_commits,                          desc = 'commits' },
+      { '<leader>fgB',    fzf_lua.git_bcommits,                         desc = 'buffer commits' },
+      { '<localleader>p', fzf_lua.registers,                            desc = 'Registers' },
+      { '<leader>fs',     fzf_lua.live_grep,                            desc = 'live grep' },
+      { '<leader>fc',     function() file_picker(vim.g.nvim_dir) end,   desc = 'nvim config' },
     },
     -- stylua: ignore end
     config = function()
@@ -144,34 +141,34 @@ return {
           ['--scrollbar'] = '▓',
           ['--ellipsis'] = icons.misc.ellipsis or '…',
         },
-        fzf_colors = true,
-        -- fzf_colors = {
-        --   -- stylua: ignore start
-        --   ['fg']        = { 'fg', 'CursorLine' },
-        --   ['bg']        = { 'bg', 'Normal' },
-        --   ['hl']        = { 'fg', 'Comment' },
-        --   ['fg+']       = { 'fg', 'Normal' },
-        --   ['bg+']       = { 'bg', 'PmenuSel' },
-        --   ['hl+']       = { 'fg', 'Statement', 'italic' },
-        --   ['info']      = { 'fg', 'Comment', 'italic' },
-        --   ['prompt']    = { 'fg', 'Underlined' },
-        --   ['pointer']   = { 'fg', 'Exception' },
-        --   ['marker']    = { 'fg', '@character' },
-        --   ['spinner']   = { 'fg', 'DiagnosticOk' },
-        --   ['header']    = { 'fg', 'Comment' },
-        --   ['gutter']    = { 'bg', 'Normal' },
-        --   ['separator'] = { 'fg', 'Comment' },
-        -- },
+        -- fzf_colors = true,
+        fzf_colors = {
+          -- stylua: ignore start
+          ['fg']        = { 'fg', 'CursorLine' },
+          ['hl']        = { 'fg', 'Comment' },
+          ['fg+']       = { 'fg', 'Normal' },
+          ['hl+']       = { 'fg', 'Statement', 'italic' },
+          ['info']      = { 'fg', 'Comment', 'italic' },
+          ['prompt']    = { 'fg', 'Underlined' },
+          ['pointer']   = { 'fg', 'Exception' },
+          ['marker']    = { 'fg', '@character' },
+          ['spinner']   = { 'fg', 'DiagnosticOk' },
+          ['header']    = { 'fg', 'Comment' },
+          ['separator'] = { 'fg', 'Comment' },
+          ['bg']        = { 'bg', 'Normal' },
+          ['bg+']       = { 'bg', 'PmenuSel' },
+          ['gutter']    = { 'bg', 'Normal' },
+        },
         previewers = {
           bat = {
             cmd = 'bat',
-            args = '--color=always --style=numbers,changes,grid,snips,filename',
-            theme = 'Sublime Snazzy',
+            -- args = '--color=always --style=numbers,changes,grid,snips,filename',
+            args = '--color=always --style=numbers',
+            theme = "Sublime Snazzy",
           },
           builtin = {
             toggle_behavior = 'extend',
             extensions = {
-              -- ['md'] = { 'mdcat' },
               ['png'] = { 'timg' },
               ['svg'] = { 'icat' },
               ['jpg'] = { 'icat' },
@@ -180,7 +177,7 @@ return {
         },
         -- stylua: ignore stop
         winopts = {
-          preview = { layout = 'vertical' },
+          preview = { layout = 'horizontal' },
           on_create = function()
             vim.keymap.set('t', '<C-j>', '<Down>', { silent = true, buffer = true })
             vim.keymap.set('t', '<C-k>', '<Up>', { silent = true, buffer = true })
@@ -217,7 +214,7 @@ return {
           -- prompt = prompt,
           winopts = {
             title = format_title('Help', '󰋖'),
-            preview = { layout = 'vertical' },
+            preview = { layout = 'flex' },
           },
         },
         oldfiles = dropdown {
@@ -264,7 +261,7 @@ return {
           code_actions = dropdown {
             winopts = {
               title = format_title('Code Actions', '󰌵', '@type'),
-              preview= { layout = 'flex' },
+              -- preview= { layout = 'horizontal' },
             },
           },
         },
@@ -305,15 +302,17 @@ return {
             preview_pager = 'delta --width="$FZF_PREVIEW_COLUMNS"',
             winopts = { title = format_title('', 'Commits') },
           },
-          -- icons = {
-          --   ['M'] = { icon = icons.git.mod, color = 'yellow' },
-          --   ['D'] = { icon = icons.git.remove, color = 'red' },
-          --   ['A'] = { icon = icons.git.staged, color = 'green' },
-          --   ['R'] = { icon = icons.git.rename, color = 'yellow' },
-          --   ['C'] = { icon = icons.git.conflict, color = 'yellow' },
-          --   ['T'] = { icon = icons.git.mod, color = 'magenta' },
-          --   ['?'] = { icon = icons.git.untracked, color = 'magenta' },
-          -- },
+          icons = {
+            -- stylua: ignore start
+            ['M'] = { icon = icons.git.mod,       color = 'yellow'  },
+            ['D'] = { icon = icons.git.remove,    color = 'red'     },
+            ['A'] = { icon = icons.git.staged,    color = 'green'   },
+            ['R'] = { icon = icons.git.rename,    color = 'yellow'  },
+            ['C'] = { icon = icons.git.conflict,  color = 'yellow'  },
+            ['T'] = { icon = icons.git.mod,       color = 'magenta' },
+            ['?'] = { icon = icons.git.untracked, color = 'magenta' },
+            -- stylua: ignore end
+          },
         },
       }
 
@@ -337,10 +336,10 @@ return {
       end
     end,
     opts = {
-      -- input = { relative = 'cursor' }, -- 'cursor', 'win', 'editor'
-      input = { enabled = false },
+      input = { relative = 'cursor' }, -- 'cursor', 'win', 'editor'
+      -- input = { enabled = false },
       select = {
-        backend = { 'fzf_lua', 'nui', 'fzf', 'builtin' },
+        backend = { 'nui', 'fzf_lua', 'fzf', 'builtin' },
         trim_prompt = true,
         builtin = {
           -- border = border,
@@ -351,11 +350,23 @@ return {
         get_config = function(opts)
           opts.prompt = opts.prompt and opts.prompt:gsub(':', '')
           if opts.kind == 'codeaction' then
+            -- return {
+            --   backend = 'fzf_lua',
+            --   fzf_lua = eo.fzf.cursor_dropdown {
+            --     winopts = { title = opts.prompt },
+            --   },
+            -- }
             return {
-              backend = 'fzf_lua',
-              fzf_lua = eo.fzf.cursor_dropdown {
-                winopts = { title = opts.prompt },
-              },
+              backend = 'nui',
+              -- fzf_lua = eo.fzf.cursor_dropdown {
+              --   winopts = { title = opts.prompt },
+              -- },
+              nui = {
+                position = '95%',
+                border = { style = 'rounded' },
+                -- min_height = 20,
+                min_width = vim.o.columns - 2,
+              }
             }
           end
           -- if opts.kind == 'orgmode' then
@@ -373,8 +384,10 @@ return {
             fzf_lua = eo.fzf.dropdown {
               winopts = {
                 title = opts.prompt,
-                height = 0.45,
-                row = 0.45,
+                -- height = 0.45,
+                -- row = 0.45,
+                height = 0.50,
+                row = 0.50,
               },
             },
           }

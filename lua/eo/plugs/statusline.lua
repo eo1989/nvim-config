@@ -28,16 +28,16 @@ return {
       },
       sections = {
         lualine_a = {
-          { 'fancy_mode' },
+          { 'fancy_mode', separator = { left = '' }, right_padding = 2 },
         },
         lualine_b = {
           { 'fancy_filename' },
           { 'fancy_cwd', substitute_home = true },
-          { 'fancy_lsp_servers' },
-        },
-        lualine_c = {
           { 'fancy_branch' },
           { 'fancy_diff' },
+        },
+        lualine_c = {
+          { 'fancy_lsp_servers' },
         },
         lualine_x = {
           { 'fancy_diagnostics' },
@@ -50,8 +50,9 @@ return {
           { 'fancy_searchcount' },
         },
         lualine_z = {
-          { "require('weather.lualine').custom(default_f_formatter, require('weather.other_icons').nerd_font)"},
-          { function() return ' ' .. os.date('%R') end },
+          -- { "require('weather.lualine').custom(default_f_formatter, require('weather.other_icons').nerd_font)"},
+          -- { function() return ' ' .. os.date('%R') end },
+          { function() return ' ' .. os.date('%R') end, separator = { right = '' }, left_padding = 2 },
         },
       },
       inactive_sections = {

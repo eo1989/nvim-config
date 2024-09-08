@@ -2,12 +2,12 @@ local api, fn = vim.api, vim.fn
 -- local highlight = eo.highlight
 
 local leap_keys = function()
-  require("leap").leap({
-    target_windows = vim.tbl_filter(
+  require('leap').leap {
+    target_windows = vim.tbl_filter {
       function(win) return eo.empty(fn.win_gettype(win)) end,
-      api.nvim_tabpage_list_wins(0)
-    ),
-  })
+      api.nvim_tabpage_list_wins(0),
+    },
+  }
 end
 
 return {

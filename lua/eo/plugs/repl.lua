@@ -61,7 +61,7 @@ return {
       endfunction
       ]])
 
-      vim.g.slime_target = 'kitty'
+      vim.g.slime_target = 'neovim'
       vim.g.slime_no_mappings = false
       vim.g.slime_python_ipython = 1
       vim.g.slime_cell_delimiter = '# %%'

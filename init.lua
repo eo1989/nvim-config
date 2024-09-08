@@ -45,8 +45,8 @@ _G.map = vim.keymap.set
 _G.P = vim.print
 
 require('eo.globals')
--- require('eo.highlights')
--- require('eo.ui')
+require('eo.highlights')
+require('eo.ui')
 require('eo.options')
 
 -- g.defaults = {
@@ -144,16 +144,16 @@ vim.notify = require('notify')
 cmd.packadd('cfilter')
 -- cmd.colorscheme('tokyonight-storm')
 cmd.colorscheme('catppuccin-macchiato')
-eo.command('TSR', function() vim.cmd([[ write edit TSBufEnable highlight ]]) end, {})
+-- eo.command('TSR', function() vim.cmd([[ write edit TSBufEnable highlight ]]) end, {})
 
--- vim.api.nvim_create_user_command(
---   'TSR',
---   function()
---     vim.cmd([[
---     write
---     edit
---     TSBufEnable highlight
---     ]])
---   end,
---   {}
--- )
+vim.api.nvim_create_user_command(
+  'TSR',
+  function()
+    vim.cmd([[
+    write
+    edit
+    TSBufEnable highlight
+    ]])
+  end,
+  {}
+)

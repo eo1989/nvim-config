@@ -1,6 +1,6 @@
 -- local cmd = vim.api.nvim_buf_create_user_command
 
--- vim.opt_local.conceallevel = 0
+vim.opt_local.conceallevel = 0
 vim.wo.conceallevel = 0
 
 -- local ok, quarto = pcall(require, 'quarto')

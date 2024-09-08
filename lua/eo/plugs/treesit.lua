@@ -1,16 +1,15 @@
 --[[
   The should_disable logic and subsequent settings are applied after reviewing stevearc/dotfiles
   specifically: github.com/stevearc/dotfiles/blob/master/nvim/lua/plugins/treesitter.lua
-]]
+--]]
 
 return {
   {
     'nvim-treesitter/nvim-treesitter',
-    version = '*',
     build = ':TSUpdate',
     opts = {
       sync_install = true,
-      auto_install = false,
+      auto_install = true,
       ensure_installed = {
         'julia',
         'python',
@@ -61,22 +60,17 @@ return {
         enable = true,
         disable = { 'help', 'txt' },
         keymaps = {
-          init_selection = '<C-Space>',
+          init_selection = 'V',
           node_incremental = '<CR>',
-          node_decremental = '<C-CR>',
+          node_decremental = '<BS>',
         },
       },
       textobjects = {
         select = {
           enable = true,
-          -- lookahead = true,
           keymaps = {
             ['af'] = { query = '@function.outer', desc = 'ts: all function' },
             ['if'] = { query = '@function.inner', desc = 'ts: inner function' },
-            -- ['ac'] = { query = '@class.outer', desc = 'ts: all class' },
-            -- ['ic'] = { query = '@class.inner', desc = 'ts: inner class' },
-            -- ['aC'] = { query = '@conditional.outer', desc = 'ts: all conditional' },
-            -- ['iC'] = { query = '@conditional.inner', desc = 'ts: inner conditional' },
             ['ib'] = { query = '@block.inner', desc = 'ts: inner block' },
             ['ab'] = { query = '@block.outer', desc = 'ts: outer block' },
           },
@@ -87,12 +81,10 @@ return {
           lookahead = true, -- automatically jump forward to textobj, similar to targets.vim
           goto_next_start = {
             [']m'] = { query = '@function.outer', desc = 'next function' },
-            -- [']M'] = { query = '@class.outer', desc = 'next class' },
             [']b'] = { query = '@block.inner', desc = 'next code block' },
           },
           goto_previous_start = {
             ['[m'] = { query = '@function.outer', desc = 'previous function' },
-            -- ['[M'] = { query = '@class.outer', desc = 'previous class' },
             ['[b'] = { query = '@block.inner', desc = 'previous code block' },
           },
         },
@@ -103,7 +95,7 @@ return {
         lint_events = { 'BufWrite', 'CursorHold' },
       },
       matchup = {
-        enable = true,
+        enable = false,
         enable_quotes = true,
         -- disable = { 'latex', 'markdown', 'norg', 'quarto', 'julia', 'txt', 'help' },
         disable = { 'txt', 'help' },
@@ -124,10 +116,11 @@ return {
       'JoosepAlviste/nvim-ts-context-commentstring',
       {
         'andymass/vim-matchup',
+        enabled = false,
         -- event = { 'CursorHold' },
         -- cmd = { 'MatchupWhereAmI' },
         init = function()
-          vim.o.matchpairs = '(:),{:},[:]'
+          vim.o.matchpairs = '(:),{:},[:],<:>'
           vim.g['matchup_surround_enabled'] = 1
           -- vim.g['matchup_matchparen_deferred'] = 1
           vim.g['matchup_matchparen_hi_surround_always'] = 1
@@ -222,7 +215,7 @@ return {
     },
   },
   {
-    'Wansmer/treesj', --[[ why not just use ts-node-action for all of it?! ]]
+    'Wansmer/treesj',
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     cmd = { 'TSJSplit', 'TSJJoin' },
     opts = {
