@@ -69,23 +69,28 @@ return {
         select = {
           enable = true,
           keymaps = {
-            ['af'] = { query = '@function.outer', desc = 'ts: all function' },
-            ['if'] = { query = '@function.inner', desc = 'ts: inner function' },
-            ['ib'] = { query = '@block.inner', desc = 'ts: inner block' },
-            ['ab'] = { query = '@block.outer', desc = 'ts: outer block' },
-          },
+            -- ['af'] = { query = '@function.outer', desc = 'ts: all function' },
+            -- ['if'] = { query = '@function.inner', desc = 'ts: inner function' },
+            -- ['ib'] = { query = '@block.inner', desc = 'ts: inner block' },
+            ['af'] = { '@function.outer' },
+            ['if'] = { '@function.inner' },
+            ['ib'] = { '@block.inner' },
         },
         move = {
           enable = true,
           set_jumps = false, -- whether to set jumps in the jumplist
           lookahead = true, -- automatically jump forward to textobj, similar to targets.vim
           goto_next_start = {
-            [']m'] = { query = '@function.outer', desc = 'next function' },
-            [']b'] = { query = '@block.inner', desc = 'next code block' },
+            -- [']m'] = { query = '@function.outer', desc = 'next function' },
+            -- [']b'] = { query = '@block.inner', desc = 'next code block' },
+            [']m'] = { '@function.outer' },
+            [']b'] = { '@block.inner' },
           },
           goto_previous_start = {
-            ['[m'] = { query = '@function.outer', desc = 'previous function' },
-            ['[b'] = { query = '@block.inner', desc = 'previous code block' },
+            -- ['[m'] = { query = '@function.outer', desc = 'previous function' },
+            -- ['[b'] = { query = '@block.inner', desc = 'previous code block' },
+            ['[m'] = { '@function.outer' },
+            ['[b'] = { '@block.inner' },
           },
         },
       },
@@ -238,7 +243,7 @@ return {
   },
   {
     'Wansmer/sibling-swap.nvim',
-    version = '*',
+    -- version = '*',
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     keys = {
       {
@@ -265,7 +270,7 @@ return {
   },
   {
     'numToStr/Comment.nvim',
-    version = '*',
+    -- version = '*',
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     keys = { 'gcc', { 'gc', mode = { 'x', 'n', 'o' } } },
     opts = function(_, opts)

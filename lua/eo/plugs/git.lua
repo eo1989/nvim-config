@@ -72,15 +72,15 @@ return {
       },
     },
     config = function(_, opts)
-      -- highlight.plugin('diffview', {
-      --   { DiffAddedChar = { bg = 'NONE', fg = { from = 'diffAdded', attr = 'bg', alter = 0.3 } } },
-      --   { DiffChangedChar = { bg = 'NONE', fg = { from = 'diffChanged', attr = 'bg', alter = 0.3 } } },
-      --   { DiffviewStatusAdded = { link = 'DiffAddedChar' } },
-      --   { DiffviewStatusModified = { link = 'DiffChangedChar' } },
-      --   { DiffviewStatusRenamed = { link = 'DiffChangedChar' } },
-      --   { DiffviewStatusUnmerged = { link = 'DiffChangedChar' } },
-      --   { DiffviewStatusUntracked = { link = 'DiffAddedChar' } },
-      -- })
+      highlight.plugin('diffview', {
+        { DiffAddedChar = { bg = 'NONE', fg = { from = 'diffAdded', attr = 'bg', alter = 0.3 } } },
+        { DiffChangedChar = { bg = 'NONE', fg = { from = 'diffChanged', attr = 'bg', alter = 0.3 } } },
+        { DiffviewStatusAdded = { link = 'DiffAddedChar' } },
+        { DiffviewStatusModified = { link = 'DiffChangedChar' } },
+        { DiffviewStatusRenamed = { link = 'DiffChangedChar' } },
+        { DiffviewStatusUnmerged = { link = 'DiffChangedChar' } },
+        { DiffviewStatusUntracked = { link = 'DiffAddedChar' } },
+      })
       require('diffview').setup(opts)
     end,
   },
@@ -133,7 +133,7 @@ return {
     event = { 'BufReadPost', 'BufNewFile' },
     config = function()
       local gitsigns = require('gitsigns')
-      gitsigns.setup({
+      gitsigns.setup {
         signs = {
           add = { text = '🮉' },
           change = { text = '🮉' },
@@ -156,20 +156,20 @@ return {
           end
 
           -- stylua: ignore start
-          bmap('n', '<leader>hu',         gs.undo_stage_hunk,                           { desc = 'undo stage'                          })
-          bmap('n', '<leader>hi',         gs.preview_hunk_inline,                       { desc = 'preview current hunk'                })
-          bmap('n', '<leader>hb',         gs.toggle_current_line_blame,                 { desc = 'toggle current line blame'           })
-          bmap('n', '<leader>hd',         gs.diffthis,                                  { desc = 'diff this'                           })
-          bmap('n', '<leader>hD',         '<cmd>Gitsigns diffthis ~',                   { desc = 'diff this ~'                         })
-          bmap('n', '<leader>hw',         gs.toggle_word_diff,                          { desc = 'toggle word diff'                    })
+          bmap('n', '<localleader>hu',         gs.undo_stage_hunk,                           { desc = 'undo stage'                          })
+          bmap('n', '<localleader>hi',         gs.preview_hunk_inline,                       { desc = 'preview current hunk'                })
+          bmap('n', '<localleader>hb',         gs.toggle_current_line_blame,                 { desc = 'toggle current line blame'           })
+          bmap('n', '<localleader>hd',         gs.diffthis,                                  { desc = 'diff this'                           })
+          bmap('n', '<localleader>hD',         '<cmd>Gitsigns diffthis ~',                   { desc = 'diff this ~'                         })
+          bmap('n', '<localleader>hw',         gs.toggle_word_diff,                          { desc = 'toggle word diff'                    })
           bmap('n', '<localleader>gw',    gs.stage_buffer,                              { desc = 'stage entire buffer'                 })
           bmap('n', '<localleader>gre',   gs.reset_buffer,                              { desc = 'reset entire buffer'                 })
-          bmap('n', '<leader>td',         gs.toggle_deleted,                            { desc = 'show deleted lines'                  })
+          bmap('n', '<localleader>td',         gs.toggle_deleted,                            { desc = 'show deleted lines'                  })
           bmap('n', '<localleader>gbl',   function() gs.blame_line({full = true}) end,  { desc = 'blame current line'                  })
-          bmap('n', '<leader>hQ',         function() gs.setqflist('all') end,           { desc = 'list modified in quickfix'           })
-          bmap('n', '<leader>hq',         gs.setqflist,                                 { desc = 'quickfix'                            })
-          bmap('v' , '<leader>hs', function() gs.stage_hunk({vim.fn.line('.'), vim.fn.line('v')}) end, { desc = 'stage git hunk'       })
-          bmap('v' , '<leader>hr', function() gs.reset_hunk({vim.fn.line('.'), vim.fn.line('v')}) end, { desc = 'reset hunk'           })
+          bmap('n', '<localleader>hQ',         function() gs.setqflist('all') end,           { desc = 'list modified in quickfix'           })
+          bmap('n', '<localleader>hq',         gs.setqflist,                                 { desc = 'quickfix'                            })
+          bmap('v' , '<localleader>hs',        function() gs.stage_hunk({vim.fn.line('.'), vim.fn.line('v')}) end, { desc = 'stage git hunk'})
+          bmap('v' , '<localleader>hr',        function() gs.reset_hunk({vim.fn.line('.'), vim.fn.line('v')}) end, { desc = 'reset hunk'    })
           bmap({ 'o', 'x' }, 'ih',        ':<C-U>Gitsigns select_hunk<CR>',             { desc = 'select hunk'                         })
           -- stylua: ignore stop
 
@@ -183,7 +183,7 @@ return {
             if vim.wo.diff then
               return "]c"
             end
-            vim.schedule(function() gs.nav_hunk { 'next', preview = true, count = 1 }  end)
+            vim.schedule(function() gs.nav_hunk { 'next', preview = false, count = 1 }  end)
             return "<ignore>"
           end, { expr = true })
           bmap('n', '[c', function()
@@ -195,11 +195,11 @@ return {
             if vim.wo.diff then
               return "[c"
             end
-            vim.schedule(function() gs.nav_hunk { 'prev', preview = true, count = 1 } end)
+            vim.schedule(function() gs.nav_hunk { 'prev', preview = false, count = 1 } end)
             return "<ignore>"
           end, { expr = true })
-        end
-      })
-    end
+        end,
   }
+    end,
+  },
 }

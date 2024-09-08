@@ -3,7 +3,6 @@ local config = vim.env.HOME .. '/.config'
 return {
   {
     'stevearc/conform.nvim',
-    version = '*',
     cmd = { 'ConformInfo', 'LspAttach' },
     -- from stevearc/dotfiles/blob/master/.config/nvim/lua/plugins/format.lua
     -- && LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/formatting.lua
@@ -71,6 +70,7 @@ return {
               julia = 'jl',
               latex = 'tex',
               markdown = 'md',
+              quarto = 'py',
               python = 'py',
               ruby = 'rb',
               rust = 'rs',
@@ -128,7 +128,7 @@ return {
         ruff = {
           -- cmd = 'ruff',
           -- args = { 'lint' },
-          args = function() return fmt('--config=%s/ruff/ruff.toml check --watch', config) end,
+          args = function() return fmt('--config=%s/ruff/ruff.toml', config) end,
         },
         -- flake8 = {
         --   cmd = 'flake8',
@@ -157,16 +157,16 @@ return {
         --     function(ctx) return fs.find({ 'ruff.toml', 'pyproject.toml' }, { path = ctx.filename, upward = true })[1] end,
         --   },
         -- },
-        pflake8 = {
-          -- name = 'pflake8',
-          cmd = 'pflake8',
-          args = {
-            function()
-              return fmt('--config=%s/flake8', config)
-              -- return vim.fs.find({ 'flake8', '.flake8' }, { path = ctx.filename, upward = true })[1]
-            end,
-          },
-        },
+        -- pflake8 = {
+        --   -- name = 'pflake8',
+        --   cmd = 'pflake8',
+        --   args = {
+        --     function()
+        --       return fmt('--config=%s/flake8', config)
+        --       -- return vim.fs.find({ 'flake8', '.flake8' }, { path = ctx.filename, upward = true })[1]
+        --     end,
+        --   },
+        -- },
       }
     end,
   },

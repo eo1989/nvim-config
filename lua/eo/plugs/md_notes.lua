@@ -28,7 +28,7 @@ return {
   { -- paste an image from the clipboard or drag-and-drop
     'HakonHarnes/img-clip.nvim',
     event = 'BufEnter',
-    ft = { 'markdown', 'quarto', 'latex' },
+    ft = { 'markdown', 'quarto' },
     opts = {
       default = {
         dir_path = 'img',
