@@ -2,7 +2,6 @@ return {
   {
     'quarto-dev/quarto-nvim',
     enabled = true,
-    version = '*',
     ft = { 'quarto' },
     dependencies = {
       'jmbuhr/otter.nvim'

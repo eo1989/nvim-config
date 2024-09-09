@@ -25,13 +25,43 @@ return {
     enabled = false,
     ft = { 'markdown', 'norg', 'org', 'rst', 'latex', 'quarto' },
   },
-  { -- paste an image from the clipboard or drag-and-drop
+  -- { -- paste an image from the clipboard or drag-and-drop
+  --   'HakonHarnes/img-clip.nvim',
+  --   event = 'BufEnter',
+  --   ft = { 'markdown', 'quarto' },
+  --   opts = {
+  --     default = {
+  --       dir_path = 'img',
+  --     },
+  --     filetypes = {
+  --       markdown = {
+  --         url_encode_path = true,
+  --         template = '![$CURSOR]($FILE_PATH)',
+  --         drag_and_drop = {
+  --           download_images = false,
+  --         },
+  --       },
+  --       quarto = {
+  --         url_encode_path = true,
+  --         template = '![$CURSOR]($FILE_PATH)',
+  --         drag_and_drop = {
+  --           download_images = false,
+  --         },
+  --       },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require('img-clip').setup(opts)
+  --     vim.keymap.set('n', '<localleader>ii', ':PasteImage<cr>', { desc = '[i]nsert [i]mage from clipboard' })
+  --   end,
+  -- },
+  {
     'HakonHarnes/img-clip.nvim',
-    event = 'BufEnter',
+    event = 'VeryLazy',
     ft = { 'markdown', 'quarto' },
     opts = {
       default = {
-        dir_path = 'img',
+        dir_path = function() return vim.fn.expand('%:t:r') end,
       },
       filetypes = {
         markdown = {
@@ -52,7 +82,7 @@ return {
     },
     config = function(_, opts)
       require('img-clip').setup(opts)
-      vim.keymap.set('n', '<leader>ii', ':PasteImage<cr>', { desc = '[i]nsert [i]mage from clipboard' })
+      map('n', '<localleader>ii', ':PasteImage<CR>', { desc = '[i]nsert [i]mage from clipboard' })
     end,
   },
 }

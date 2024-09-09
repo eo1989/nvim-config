@@ -30,10 +30,14 @@ return {
         async = true,
         quiet = false,
       },
-      notify_on_error = false,
+      notify_on_error = true,
+      notify_no_formatters = true,
       log_level = vim.log.levels.ERROR,
-      -- format_after_save = { lsp_fallback = 'fallback' },
-      -- format_on_save = { timeout_ms = 500, lsp_fallback = 'fallback' },
+      -- format_after_save = { lsp_format = 'fallback' },
+      default_format_opts = {
+        lsp_format = 'fallback',
+      },
+      format_on_save = { lsp_format = 'fallback', timeout_ms = 500 },
       formatters_by_ft = {
         lua = { 'stylua' },
         -- ['python'] = function(bufnr)
@@ -70,7 +74,7 @@ return {
               julia = 'jl',
               latex = 'tex',
               markdown = 'md',
-              quarto = 'py',
+              -- quarto = 'py',
               python = 'py',
               ruby = 'rb',
               rust = 'rs',

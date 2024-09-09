@@ -162,15 +162,15 @@ return {
           bmap('n', '<localleader>hd',         gs.diffthis,                                  { desc = 'diff this'                           })
           bmap('n', '<localleader>hD',         '<cmd>Gitsigns diffthis ~',                   { desc = 'diff this ~'                         })
           bmap('n', '<localleader>hw',         gs.toggle_word_diff,                          { desc = 'toggle word diff'                    })
-          bmap('n', '<localleader>gw',    gs.stage_buffer,                              { desc = 'stage entire buffer'                 })
-          bmap('n', '<localleader>gre',   gs.reset_buffer,                              { desc = 'reset entire buffer'                 })
+          bmap('n', '<localleader>gw',         gs.stage_buffer,                              { desc = 'stage entire buffer'                 })
+          bmap('n', '<localleader>gre',        gs.reset_buffer,                              { desc = 'reset entire buffer'                 })
           bmap('n', '<localleader>td',         gs.toggle_deleted,                            { desc = 'show deleted lines'                  })
-          bmap('n', '<localleader>gbl',   function() gs.blame_line({full = true}) end,  { desc = 'blame current line'                  })
+          bmap('n', '<localleader>gbl',        function() gs.blame_line({full = true}) end,  { desc = 'blame current line'                  })
           bmap('n', '<localleader>hQ',         function() gs.setqflist('all') end,           { desc = 'list modified in quickfix'           })
           bmap('n', '<localleader>hq',         gs.setqflist,                                 { desc = 'quickfix'                            })
           bmap('v' , '<localleader>hs',        function() gs.stage_hunk({vim.fn.line('.'), vim.fn.line('v')}) end, { desc = 'stage git hunk'})
           bmap('v' , '<localleader>hr',        function() gs.reset_hunk({vim.fn.line('.'), vim.fn.line('v')}) end, { desc = 'reset hunk'    })
-          bmap({ 'o', 'x' }, 'ih',        ':<C-U>Gitsigns select_hunk<CR>',             { desc = 'select hunk'                         })
+          bmap({ 'o', 'x' }, 'ih',             ':<C-U>Gitsigns select_hunk<CR>',             { desc = 'select hunk'                         })
           -- stylua: ignore stop
 
 
@@ -199,7 +199,7 @@ return {
             return "<ignore>"
           end, { expr = true })
         end,
-  }
+      }
     end,
   },
 }

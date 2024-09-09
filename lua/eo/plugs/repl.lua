@@ -22,16 +22,16 @@ return {
     version = '*',
     opts = {
       custom_language_formatting = {
-        python = {
-          extension = 'md',
-          style = 'markdown',
-          force_ft = 'markdown', -- you can set whatever ft you want here
-        },
         -- python = {
-        --   extension = 'qmd',
-        --   style = 'quarto',
-        --   force_ft = 'quarto', -- you can set whatever ft you want here
+        --   extension = 'md',
+        --   style = 'markdown',
+        --   force_ft = 'markdown', -- you can set whatever ft you want here
         -- },
+        python = {
+          extension = 'qmd',
+          style = 'quarto',
+          force_ft = 'quarto', -- you can set whatever ft you want here
+        },
       },
     },
   },
@@ -61,7 +61,7 @@ return {
       endfunction
       ]])
 
-      vim.g.slime_target = 'neovim'
+      vim.g.slime_target = 'kitty'
       vim.g.slime_no_mappings = false
       vim.g.slime_python_ipython = 1
       vim.g.slime_cell_delimiter = '# %%'
@@ -95,40 +95,40 @@ return {
     version = '*',
     build = ':UpdateRemotePlugins',
     lazy = false,
-    init = function()
-      vim.g.molten_image_provider = 'image.nvim'
-      vim.g.molten_output_win_height = 20
-      vim.g.molten_auto_open_output = false
-      vim.g.molten_virt_text_output = true
-      vim.g.molten_virt_lines_off_by_1 = false
-      vim.g.molten_wrap_output = true
-      vim.api.nvim_create_autocmd('User', {
-        -- buffer = 0,
-
-        pattern = 'MoltenInitPost',
-        callback = function()
-          map('n', '<leader>mx', '<cmd>MoltenDeinit<CR>', { buffer = 0, desc = 'Molten Stop' })
-          map('n', '<S-CR>', '<cmd>MoltenEvaluateOperator<CR>', { buffer = 0, desc = 'Run' })
-          map('x', '<S-CR>', '<cmd>MoltenEvaluateVisual<CR>', { buffer = 0, desc = 'Run xSelection' })
-          map('v', '<S-CR>', '<cmd><C-u>MoltenEvaluateVisual<CR>', { buffer = 0, desc = 'Run vSelection' })
-          map('n', '<S-CR><S-CR>', 'vib<S-CR>]bj', { buffer = 0, remap = true, desc = 'Run cell and move' })
-          map('n', '<leader>rn', '<cmd>MoltenHideOutput<CR>', { buffer = 0, desc = 'Hide Output' })
-          map('n', '<leader>ro', '<cmd>noautocmd MoltenEnterOutput<CR>', { buffer = 0, desc = 'Show/Enter Output' })
-          map('n', '<leader>ri', '<cmd>MoltenImportOutput<CR>', { buffer = 0, desc = 'Import Notebook Output' })
-          map(
-            { 'v', 'x' },
-            '<leader>mv',
-            '<cmd><C-u>MoltenEvaluateVisual<CR>',
-            { buffer = true, desc = 'molten eval visual' }
-          )
-        end,
-      })
-      vim.api.nvim_create_autocmd('BufWritePost', {
-        pattern = { '*.ipynb' },
-        callback = function()
-          if require('molten.status').initialized() == 'Molten' then vim.cmd('MoltenExportOutput') end
-        end,
-      })
-    end,
+    -- init = function()
+    --   vim.g.molten_image_provider = 'image.nvim'
+    --   vim.g.molten_output_win_height = 20
+    --   vim.g.molten_auto_open_output = false
+    --   vim.g.molten_virt_text_output = true
+    --   vim.g.molten_virt_lines_off_by_1 = false
+    --   vim.g.molten_wrap_output = true
+    --   vim.api.nvim_create_autocmd('User', {
+    --     -- buffer = 0,
+    --
+    --     pattern = 'MoltenInitPost',
+    --     callback = function()
+    --       -- map('n', '<leader>mx', '<cmd>MoltenDeinit<CR>', { buffer = 0, desc = 'Molten Stop' })
+    --       map('n', '<S-CR>', '<cmd>MoltenEvaluateOperator<CR>', { buffer = 0, desc = 'Run' })
+    --       map('x', '<S-CR>', '<cmd>MoltenEvaluateVisual<CR>', { buffer = 0, desc = 'Run xSelection' })
+    --       map('v', '<S-CR>', '<cmd><C-u>MoltenEvaluateVisual<CR>', { buffer = 0, desc = 'Run vSelection' })
+    --       map('n', '<S-CR><S-CR>', 'vib<S-CR>]bj', { buffer = 0, remap = true, desc = 'Run cell and move' })
+    --       map('n', '<leader>rn', '<cmd>MoltenHideOutput<CR>', { buffer = 0, desc = 'Hide Output' })
+    --       map('n', '<leader>ro', '<cmd>noautocmd MoltenEnterOutput<CR>', { buffer = 0, desc = 'Show/Enter Output' })
+    --       map('n', '<leader>ri', '<cmd>MoltenImportOutput<CR>', { buffer = 0, desc = 'Import Notebook Output' })
+    --       map(
+    --         { 'v', 'x' },
+    --         '<leader>mv',
+    --         '<cmd><C-u>MoltenEvaluateVisual<CR>',
+    --         { buffer = true, desc = 'molten eval visual' }
+    --       )
+    --     end,
+    --   })
+    --   vim.api.nvim_create_autocmd('BufWritePost', {
+    --     pattern = { '*.ipynb' },
+    --     callback = function()
+    --       if require('molten.status').initialized() == 'Molten' then vim.cmd('MoltenExportOutput') end
+    --     end,
+    --   })
+    -- end,
   },
 }

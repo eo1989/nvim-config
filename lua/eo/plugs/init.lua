@@ -9,14 +9,14 @@ return {
   --     weather_icons = require('weather.other_icons').nerd_font,
   --   },
   -- },
-  {
-    'mikesmithgh/kitty-scrollback.nvim',
-    enabled = false,
-    lazy = true,
-    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
-    event = { 'User KittyScrollbackLaunch' },
-    opts = {},
-  },
+  -- {
+  --   'mikesmithgh/kitty-scrollback.nvim',
+  --   enabled = false,
+  --   lazy = true,
+  --   cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+  --   event = { 'User KittyScrollbackLaunch' },
+  --   opts = {},
+  -- },
   {
     'nvim-lua/plenary.nvim',
     version = '*',
@@ -94,13 +94,13 @@ return {
   { 'milisims/nvim-luaref', lazy = true },
   {
     url = 'https://gitlab.com/yorickpeterse/nvim-pqf',
-    enabled = true,
+    -- enabled = true,
     event = 'VeryLazy',
     opts = {},
   },
   {
     'kevinhwang91/nvim-bqf',
-    enabled = true,
+    -- enabled = true,
     ft = 'qf',
     opts = {
       auto_enable = true,
@@ -157,9 +157,8 @@ return {
     'danymat/neogen',
     cmd = { 'Neogen' },
     dependencies = 'nvim-treesitter/nvim-treesitter',
-    config = true,
+    opts = {},
   },
-
   {
     'chrishrb/gx.nvim',
     enabled = true,

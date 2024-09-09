@@ -16,82 +16,75 @@ return {
     event = 'LspAttach',
     ft = { 'json', 'yaml' },
   },
-  -- {
-  --   'DNLHC/glance.nvim',
-  --   event = 'LspAttach',
-  --   opts = {
-  --     preview_win_opts = { number = false },
-  --     theme = { enable = true, mode = 'darken' },
-  --   },
-  -- },
   {
-    {
-      'williamboman/mason.nvim',
-      cmd = 'Mason',
-      build = ':MasonUpdate',
-      opts = { ui = { border = 'rounded', height = 0.7 } },
-    },
-    {
-      'williamboman/mason-lspconfig.nvim',
-      event = { 'BufReadPre', 'BufNewFile' },
-      dependencies = {
-        'mason.nvim',
-        {
-          'neovim/nvim-lspconfig',
-          dependencies = {
-            {
-              'folke/lazydev.nvim',
-              dependencies = {
-                { 'Bilal2453/luvit-meta', lazy = true },
-              },
-              ft = 'lua',
-              opts = { library = { { path = 'luvit-meta/library', words = { 'vim%.uv' } } } },
-            },
-            {
-              'j-hui/fidget.nvim',
-              event = 'LspAttach',
-              opts = {
-                progress = {
-                  display = {
-                    overrides = {
-                      lua_ls = { name = 'lua-ls' },
-                    },
+    'williamboman/mason.nvim',
+    cmd = 'Mason',
+    build = ':MasonUpdate',
+    opts = { ui = { border = 'rounded', height = 0.7 } },
+  },
+  {
+    'williamboman/mason-lspconfig.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = {
+      { 'williamboman/mason.nvim' },
+      {
+        'neovim/nvim-lspconfig',
+        dependencies = {
+          {
+            'j-hui/fidget.nvim',
+            event = 'LspAttach',
+            opts = {
+              progress = {
+                display = {
+                  overrides = {
+                    lua_ls = { name = 'lua-ls' },
                   },
                 },
-                notification = {
-                  override_vim_notify = true,
-                  view = { stack_upwards = false },
-                  window = {
-                    y_padding = -1,
-                    winblend = 10,
-                    align = 'top',
-                    max_height = 10,
-                  },
+              },
+              notification = {
+                override_vim_notify = true,
+                view = { stack_upwards = false },
+                window = {
+                  y_padding = -1,
+                  winblend = 10,
+                  align = 'top',
+                  max_height = 10,
                 },
               },
             },
           },
-          config = function()
-            -- highlight.plugin('lspconfig', { { LspInfoBorder = { link = 'FloatBoarder' } } })
-            require('lspconfig.ui.windows').default_options.border = 'rounded'
-          end,
         },
-      },
-      opts = {
-        automatic_installation = false,
-        handlers = {
-          function(name)
-            local config = require('eo.servers')(name)
-            if config then require('lspconfig')[name].setup(config) end
-          end,
-        },
+        config = function()
+          -- highlight.plugin('lspconfig', { { LspInfoBorder = { link = 'FloatBoarder' } } })
+          require('lspconfig.ui.windows').default_options.border = 'rounded'
+        end,
       },
     },
-    { 'Bilal2453/luvit-meta', lazy = true },
+    opts = {
+      automatic_installation = false,
+      handlers = {
+        function(name)
+          local config = require('eo.servers')(name)
+          if config then require('lspconfig')[name].setup(config) end
+        end,
+      },
+    },
   },
   {
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    dependencies = { 'Bilal2453/luvit-meta' },
+    opts = {
+      library = {
+        path = 'luvit-meta/library',
+        words = { 'vim%.uv' },
+      },
+    },
+  },
+  { 'Bilal2453/luvit-meta', lazy = true },
+  {
     'dgagn/diagflow.nvim',
-    event = "DiagnosticChanged",
+    event = 'DiagnosticChanged',
     opts = {
       scope = 'line', -- 'cursor' | 'line'
       show_sign = true,
@@ -116,12 +109,12 @@ return {
     'utilyre/barbecue.nvim',
     event = 'LspAttach',
     dependencies = {
-      'neovim/nvim-lspconfig',
+      { 'neovim/nvim-lspconfig' },
       {
         'SmiteshP/nvim-navic',
         opts = { highlight = true },
       },
-      'nvim-tree/nvim-web-devicons',
+      { 'nvim-tree/nvim-web-devicons' },
     },
     opts = function(_, opts)
       local opts = {
@@ -205,3 +198,67 @@ return {
     },
   },
 }
+-- {
+--   'DNLHC/glance.nvim',
+--   event = 'LspAttach',
+--   opts = {
+--     preview_win_opts = { number = false },
+--     theme = { enable = true, mode = 'darken' },
+--   },
+-- },
+-- {
+--   {
+--     'williamboman/mason.nvim',
+--     cmd = 'Mason',
+--     build = ':MasonUpdate',
+--     opts = { ui = { border = 'rounded', height = 0.7 } },
+--   },
+--   {
+--     'williamboman/mason-lspconfig.nvim',
+--     event = { 'BufReadPre', 'BufNewFile' },
+--     dependencies = {
+--       'williamboman/mason.nvim',
+--       {
+--         'neovim/nvim-lspconfig',
+--         dependencies = {
+--           {
+--             'j-hui/fidget.nvim',
+--             event = 'LspAttach',
+--             opts = {
+--               progress = {
+--                 display = {
+--                   overrides = {
+--                     lua_ls = { name = 'lua-ls' },
+--                   },
+--                 },
+--               },
+--               notification = {
+--                 override_vim_notify = true,
+--                 view = { stack_upwards = false },
+--                 window = {
+--                   y_padding = -1,
+--                   winblend = 10,
+--                   align = 'top',
+--                   max_height = 10,
+--                 },
+--               },
+--             },
+--           },
+--         },
+--         config = function()
+--           -- highlight.plugin('lspconfig', { { LspInfoBorder = { link = 'FloatBoarder' } } })
+--           require('lspconfig.ui.windows').default_options.border = 'rounded'
+--         end,
+--       },
+--     },
+--     opts = {
+--       automatic_installation = false,
+--       handlers = {
+--         function(name)
+--           local config = require('eo.servers')(name)
+--           if config then require('lspconfig')[name].setup(config) end
+--         end,
+--       },
+--     },
+--   },
+-- },

@@ -12,20 +12,14 @@ sudo apt installl luajit
 ]]
 
 return {
-  {
-    'https://github.com/leafo/magick',
-    build = 'rockspec',
-  },
+  -- {
+  --   'https://github.com/leafo/magick',
+  --   build = 'rockspec',
+  -- },
   {
     '3rd/image.nvim',
     ft = { 'markdown', 'quarto' },
-    -- dependencies = {
-    --   {
-    --     'vhyrro/luarocks.nvim',
-    --     -- priority = 1001,
-    --     opts = { rocks = { 'magick' } },
-    --   },
-    -- },
+    dependencies = { 'leafo/magick' },
     config = function()
       local image = require('image')
       image.setup {
@@ -113,36 +107,6 @@ return {
       end, { buffer = true, desc = 'image [o]pen' })
 
       map('n', '<leader>ic', clear_all_images, { desc = 'image [c]lear' })
-    end,
-  },
-  {
-    'HakonHarnes/img-clip.nvim',
-    -- event = 'VeryLazy',
-    ft = { 'markdown', 'latex', 'quarto' },
-    opts = {
-      default = {
-        dir_path = function() return vim.fn.expand('%:t:r') end,
-      },
-      filetypes = {
-        markdown = {
-          url_encode_path = true,
-          template = '![$CURSOR]($FILE_PATH)',
-          drag_and_drop = {
-            download_images = false,
-          },
-        },
-        quarto = {
-          url_encode_path = true,
-          template = '![$CURSOR]($FILE_PATH)',
-          drag_and_drop = {
-            download_images = false,
-          },
-        },
-      },
-    },
-    config = function(opts, _)
-      require('img-clip').setup(opts)
-      map('n', '<localleader>ii', ':PasteImage<CR>', { desc = 'insert [i]mage from clipboard' })
     end,
   },
 }

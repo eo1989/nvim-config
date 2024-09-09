@@ -2,13 +2,10 @@
 
 local api, ui = vim.api, eo.ui
 
-
 return {
   {
-    'abecodes/tabout.nvim',
-    enabled = true,
-    dependencies = { 'hrsh7th/nvim-cmp' },
-    event = 'InsertCharPre',
+    'kawre/neotab.nvim',
+    event = 'InsertEnter',
     opts = {},
   },
   {
@@ -17,12 +14,6 @@ return {
     branch = 'main',
     event = 'InsertEnter',
     dependencies = {
-      -- {
-      --   'garymjr/nvim-snippets',
-      --   enabled = false,
-      --   opts = { friendly_snippets = true },
-      --   dependencies = { 'rafamadriz/friendly-snippets', lazy = false },
-      -- },
       { 'hrsh7th/cmp-nvim-lsp' },
       { 'hrsh7th/cmp-path' },
       { 'onsails/lspkind.nvim' },
@@ -44,29 +35,13 @@ return {
       local cmp_types = require('cmp.types')
       local lspkind = require('lspkind')
       local luasnip = require('luasnip')
-
-      -- local function has_words_before()
-      --   unpack = unpack or table.unpack
-      --   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-      --   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
-      -- end
+      local neotab = require('neotab')
 
       local function has_words_before()
-        local line, col = unpack(api.nvim_win_get_cursor(0))
-        if col == 0 then return false end
-        local str = api.nvim_buf_get_lines(0, line - 1, line, true)[1]
-        local curr_char = str:sub(col, col)
-        local next_char = str:sub(col + 0, col + 1)
-        return col ~= -1
-          and curr_char:match('%s') == nil
-          and next_char ~= '"'
-          and next_char ~= "'"
-          and next_char ~= '}'
-          and next_char ~= ']'
-          and next_char ~= ')'
+        unpack = unpack or table.unpack
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
       end
-
-      -- local function is_visible(_) return cmp.core.view:visible() or vim.fn.pumvisible() == 1 end
 
       cmp.setup {
         experimental = { ghost_text = false, native_menu = false },
@@ -91,7 +66,6 @@ return {
         view = {
           entries = {
             name = 'custom',
-            -- follow_cursor = false,
             selection_order = 'near_cursor',
           },
           docs = { auto_open = true },
@@ -102,20 +76,16 @@ return {
           disallow_partial_fuzzy_matching = true,
           disallow_partial_matching = true,
           disallow_prefix_unmatching = false,
-          -- disallow_symbol_nonprefix_matching = false,
         },
         preselect = cmp.PreselectMode.Item, -- Item | None
-        -- sources = cmp.config.sources {
         sources = {
           { name = 'path', option = { trailing_slash = true } },
           { name = 'lazydev', group_index = 0 },
           { name = 'luasnip', priority = 9, max_item_count = 3 },
           { name = 'nvim_lsp', priority = 10 },
-          -- { name = 'lazydev' }, -- grp idx = 0 to skip loading LuaLS completions
           { { name = 'buffer', keyword_length = 3, max_item_count = 3 } },
         },
         window = {
-          -- documentation = cmp.config.window.bordered { border = 'rounded' },
           documentation = {
             winblend = 10,
             border = 'rounded',
@@ -132,30 +102,41 @@ return {
           ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert }, { 'i' }),
           ['<C-n>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_next_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
+              cmp.select_next_item { behavior = cmp_types.cmp.SelectBehavior.Insert }
             elseif has_words_before then
               cmp.complete()
             else
               fallback()
             end
           end, { 'i', 'c' }),
-          ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }), {'i', 'c'}),
-          -- ['<C-p>'] = cmp.mapping(function(fallback)
-          --   if cmp.visible() then
-          --     cmp.mapping.select_prev_item({ behavior = cmp_types.cmp.SelectBehavior.Insert })
+          -- ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Insert })),
+          ['<C-p>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.mapping.select_prev_item { behavior = cmp_types.cmp.SelectBehavior.Insert }
+            else
+              fallback()
+            end
+          end, { 'i', 'c' }),
+
+          -- ['<C-Space>'] = cmp.mapping(cmp.mapping.complete({reason = 'auto'})),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          -- ['<C-g>'] = function(fallback)
+          --   if cmp.core.view:visible() then
+          --     if cmp.visible_docs() then
+          --       cmp.close_docs()
+          --     else
+          --       cmp.open_docs()
+          --     end
           --   else
           --     fallback()
           --   end
-          -- end),
-
-          ['<C-e>'] = cmp.mapping.abort(),
+          -- end,
 
           ['<CR>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              -- if luasnip.expandable() then
-              --   luasnip.expand()
               if cmp.get_selected_entry() then
-                cmp.confirm({ select = false, cmp_types.cmp.ConfirmBehavior.Insert })
+                cmp.confirm { select = false, cmp_types.cmp.ConfirmBehavior.Insert }
               else
                 cmp.close()
               end
@@ -173,6 +154,7 @@ return {
             elseif luasnip.locally_jumpable(1) then
               luasnip.jump(1)
             else
+              -- neotab.tabout()
               fallback()
             end
           end, { 'i', 's' }),
@@ -192,7 +174,7 @@ return {
           expandable_indicator = true,
           fields = { 'kind', 'abbr', 'menu' },
           format = function(entry, vim_item)
-            local kind = require('lspkind').cmp_format({
+            local kind = require('lspkind').cmp_format {
               mode = 'symbol_text',
               maxwidth = 50,
               ellipsis_char = '…',
@@ -247,7 +229,7 @@ return {
                 neorg = ' ',
                 cmdline = ' ',
               },
-            })(entry, vim_item)
+            }(entry, vim_item)
             local strings = vim.split(kind.kind, '%s', { trimempty = true })
             kind.kind = ' ' .. (strings[1] or '') .. ' '
             kind.menu = '    (' .. (strings[2] or entry.source.name) .. ')'
@@ -259,12 +241,13 @@ return {
       cmp.setup.filetype({ 'markdown', 'quarto' }, {
         sources = cmp.config.sources {
           { name = 'lua-latex-symbols', priority = 5 },
+          { name = 'otter', priority = 10 },
         },
       })
 
       cmp.setup.filetype({ 'dap-repl', 'dapui_watches', 'dapui_hover' }, {
         sources = cmp.config.sources {
-          { name = 'dap' }
+          { name = 'dap' },
         },
       })
 
@@ -291,7 +274,7 @@ return {
   },
   {
     'zbirenbaum/copilot-cmp',
-    version = '*',
+    -- version = '*',
     enabled = true,
     event = 'InsertEnter',
     opts = {},
@@ -332,3 +315,18 @@ return {
     },
   },
 }
+
+-- local function has_words_before()
+--   local line, col = unpack(api.nvim_win_get_cursor(0))
+--   if col == 0 then return false end
+--   local str = api.nvim_buf_get_lines(0, line - 1, line, true)[1]
+--   local curr_char = str:sub(col, col)
+--   local next_char = str:sub(col + 0, col + 1)
+--   return col ~= -1
+--     and curr_char:match('%s') == nil
+--     and next_char ~= '"'
+--     and next_char ~= "'"
+--     and next_char ~= '}'
+--     and next_char ~= ']'
+--     and next_char ~= ')'
+-- end
